@@ -1,8 +1,8 @@
 const express = require('express');
-const { processExcelAndSendEmailsStudents, processExcelAndSendEmailsTeachers } = require('../controllers/emailController');
+const { registerStudent, registerTeacher } = require('../controllers/emailController');
 const router = express.Router();
 
-router.post('/registerStudent', processExcelAndSendEmailsStudents); 
-router.post('/registerTeacher', processExcelAndSendEmailsTeachers);
+router.post('/registerStudent', registerStudent); 
+router.post('/registerTeacher', registerTeacher);
 
 module.exports = router;
