@@ -1,8 +1,8 @@
 const express = require('express');
-const { processExcelAndSendEmails } = require('../controllers/emailController');
+const { processExcelAndSendEmailsStudents, processExcelAndSendEmailsTeachers } = require('../controllers/emailController');
 const router = express.Router();
 
-// Define the route to process the excel file
-router.post('/', processExcelAndSendEmails); // Use '/' as the relative path for POST
+router.post('/registerStudent', processExcelAndSendEmailsStudents); 
+router.post('/registerTeacher', processExcelAndSendEmailsTeachers);
 
 module.exports = router;
