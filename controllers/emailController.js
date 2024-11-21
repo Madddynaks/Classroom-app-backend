@@ -4,14 +4,13 @@ const { sendEmail } = require('../utils/emailSender');
 const processExcelAndSendEmailsStudents = async (req, res) => {
     try {
         const { filePath } = req.body;
-        console.log("here");
         const data = extractDataFromExcel(filePath);
 
         for (const row of data) {
-            const { Name, Rollno, Email } = row;
+            const { Name, Rollno, semester, branch, Email } = row;
+            const role = "Student"
             const uniqueId = generateUniqueId();
             const password = generatePassword();
-            console.log(row);
 
             const emailContent = `
                 Hello ${Name},
@@ -40,14 +39,13 @@ const processExcelAndSendEmailsStudents = async (req, res) => {
 const processExcelAndSendEmailsTeachers = async (req, res) => {
     try {
         const { filePath } = req.body;
-        console.log("here");
         const data = extractDataFromExcel(filePath);
 
         for (const row of data) {
             const { Name, Email } = row;
             const uniqueId = generateUniqueId();
             const password = generatePassword();
-            console.log(row);
+            const role = "Teacher"
 
             const emailContent = `
                 Hello ${Name},
@@ -64,6 +62,7 @@ const processExcelAndSendEmailsTeachers = async (req, res) => {
             `;
 
             await sendEmail(Email, 'Your Account Details', emailContent);
+
         }
 
         res.status(200).send({ message: 'Emails sent successfully!' });
