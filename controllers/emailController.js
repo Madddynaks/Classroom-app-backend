@@ -7,51 +7,10 @@ const NotesData = require('../models/Notes');
 const FeedbackData = require('../models/Feedback');
 const ClassroomData = require('../models/Classroom');
 const CRData = require('../models/CR');
-
-// const registerStudent = async (req, res) => {
-//     try {
-//         const { filePath } = req.body;
-//         const data = extractDataFromExcel(filePath);
-
-//         for (const row of data) {
-//             const { Name, Rollno, semester, branch, Email } = row;
-//             console.log(row);
-//             const role = "Student"
-//             const uniqueId = generateUniqueId();
-//             const password = generatePassword();
-//             const studentData = new StudentData({
-//                 id: uniqueId, // `uniqueId` maps to `id`
-//                 name: Name,   // `Name` maps to `name`
-//                 rollno: Rollno.toString(), // Convert Rollno to string as schema expects a String
-//                 semester,
-//                 branch,
-//             });
-            
-
-//             const emailContent = `
-//                 Hello ${Name},
-
-//                 Your account has been created successfully.
-
-//                 Unique ID: ${uniqueId}
-//                 Password: ${password}
-
-//                 Please keep these details secure.
-
-//                 Regards,
-//                 Admin Team
-//             `;
-
-//             await sendEmail(Email, 'Your Account Details', emailContent);
-//             await studentData.save()
-            
-//         }
-//         res.status(201).send({ message: 'Emails sent successfully!' });
-//     } catch (error) {
-//         console.error('Error processing Excel data:', error);
-//         res.status(500).send({ error: 'Failed to process data and send emails' });
-//     }
-// };
+const AdminData = require('../models/Admin');
+const AnnouncementData = require('../models/Announcements');
+const SubjectData = require('../models/Subjects');
+const TeacherSubjectData = require('../models/Teacher-Subject');
 
 const registerStudent = async (req, res) => {
     try {
