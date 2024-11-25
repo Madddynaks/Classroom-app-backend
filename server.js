@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const announcementRoutes = require('./routes/announcementRoutes');
 require('dotenv').config();
 
 // Import routes
@@ -19,6 +20,7 @@ connectDB();
 
 // Routes
 app.use('/', emailRoutes);
+app.use("/api/announcements", announcementRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
