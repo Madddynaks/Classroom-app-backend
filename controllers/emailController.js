@@ -77,6 +77,46 @@ const registerStudent = async (req, res) => {
     }
 };
 
+
+const addSubjectsExcel = async (req, res) => {
+    try {
+        const { filePath } = req.body;
+        const data = extractDataFromExcel(filePath);
+
+        for (const row of data) {
+            const { name, semester, branch } = row; 
+
+            if (!name || !semester || !branch) {
+                console.error('Invalid row:', row);
+                continue; // Skip invalid rows
+            }
+            const uniqueId = generateUniqueId();
+
+            const subjectData = new SubjectData({
+                SubjectId: uniqueId, 
+                name,
+                semester, 
+                branch,
+            });
+
+
+            try {
+                await subjectData.save();
+            } catch (err) {
+                console.error('Error saving student data:', err);
+                continue;
+            }
+        }
+
+        res.status(201).send({ message: 'Subjects saved successfully!' });
+    } catch (error) {
+        console.error('Error processing Excel data:', error);
+        res.status(500).send({ error: 'Failed to process data and send emails' });
+    }
+};
+
+
+
 const registerTeacher = async (req, res) => {
     try {
         const { filePath } = req.body;
@@ -133,4 +173,4 @@ const registerTeacher = async (req, res) => {
     }
 };
 
-module.exports = { registerStudent, registerTeacher };
+module.exports = { registerStudent, registerTeacher, addSubjectsExcel };
