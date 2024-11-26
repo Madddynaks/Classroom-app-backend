@@ -7,6 +7,7 @@ require('dotenv').config();
 
 // Import routes
 const emailRoutes = require('./routes/emailRoutes'); // Make sure this is correct path
+const manageStudentsRoutes = require('./routes/manageStudentsRoutes');
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.use(cors());
 connectDB();
 
 // Routes
-app.use('/', emailRoutes);
+app.use('/api/', emailRoutes);
 app.use("/api/announcements", announcementRoutes);
+app.use("/api/manageStudents", manageStudentsRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
