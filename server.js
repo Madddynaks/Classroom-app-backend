@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const announcementRoutes = require('./routes/announcementRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 require('dotenv').config();
 
 // Import routes
@@ -25,6 +26,7 @@ app.use('/api', emailRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/manageStudents", manageStudentsRoutes);
 app.use("/api", teacherSubjectRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
