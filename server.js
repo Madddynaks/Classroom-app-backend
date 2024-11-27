@@ -10,6 +10,7 @@ require('dotenv').config();
 const emailRoutes = require('./routes/emailRoutes'); // Make sure this is correct path
 const manageStudentsRoutes = require('./routes/manageStudentsRoutes');
 const teacherSubjectRoutes = require('./routes/teacherSubjectRoutes');
+const notesRoutes = require('./routes/notesRoutes');
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/manageStudents", manageStudentsRoutes);
 app.use("/api", teacherSubjectRoutes);
 app.use("/api/feedback", feedbackRoutes);
-
+app.use("/api/notes", notesRoutes);
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
