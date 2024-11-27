@@ -27,9 +27,9 @@ const addCR = async (req, res) => {
     const newCR = new CR({ id });
     await newCR.save();
 
-    // Update the role of the user in the User table
-    user.role = "CR";
-    await user.save();
+    // // Update the role of the user in the User table
+    // user.role = "CR";
+    // await user.save();
 
     res.status(201).json({ message: "CR added successfully", cr: newCR });
   } catch (error) {
