@@ -5,12 +5,21 @@ const Student = require("../models/Students");
 // Controller to add announcement
 const addAnnouncement = async (req, res) => {
   try {
-    const { teacherId, semesters, announcementText } = req.body;
+    const {semesters, announcementText} = req.body;
 
+    const teacherId = req.body.user_id;
+
+    // Check if the user is a Teacher
+    if (req.body.role.toLowerCase() !== 'teacher') {
+      return res.status(403).json({ message: "Only teachers are allowed to create announcements" });
+    }
+
+    // Check for missing fields
     if (!teacherId || !semesters || !announcementText) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+    // Create announcement data for each semester
     const announcementData = semesters.map((sem) => ({
       TeacherId: teacherId,
       semester: sem.semester,
@@ -18,42 +27,43 @@ const addAnnouncement = async (req, res) => {
       announcement: announcementText,
     }));
 
-    // Insert multiple announcements
+    // Insert multiple announcements into the database
     await Announcement.insertMany(announcementData);
 
     res.status(201).json({ message: "Announcements added successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Error adding announcement:", error);
     res.status(500).json({ message: "Server error", error });
   }
 };
 
-const deleteAnnouncement = async (req, res) => {
-    try {
-      const { id } = req.body;
+
+// const deleteAnnouncement = async (req, res) => { // review
+//     try {
+//       const { id } = req.body;
   
-      if (!id) {
-        return res.status(400).json({ message: "Announcement ID is required" });
-      }
+//       if (!id) {
+//         return res.status(400).json({ message: "Announcement ID is required" });
+//       }
   
-      // Find and delete the announcement by ID
-      const deletedAnnouncement = await Announcement.findByIdAndDelete(id);
+//       // Find and delete the announcement by ID
+//       const deletedAnnouncement = await Announcement.findByIdAndDelete(id);
   
-      if (!deletedAnnouncement) {
-        return res.status(404).json({ message: "Announcement not found" });
-      }
+//       if (!deletedAnnouncement) {
+//         return res.status(404).json({ message: "Announcement not found" });
+//       }
   
-      res.status(200).json({ message: "Announcement deleted successfully", data: deletedAnnouncement });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error", error });
-    }
-  };
+//       res.status(200).json({ message: "Announcement deleted successfully", data: deletedAnnouncement });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: "Server error", error });
+//     }
+//   };
 
   const fetchAnnouncements = async (req, res) => {
     try {
-      const { userId } = req.body; // The user's ID is passed in the request body
-  
+      const { userId } = req.body.user_id // The user's ID is passed in the request body
+
       if (!userId) {
         return res.status(400).json({ message: "User ID is required" });
       }
@@ -92,4 +102,4 @@ const deleteAnnouncement = async (req, res) => {
     }
   };
 
-module.exports = { addAnnouncement , deleteAnnouncement , fetchAnnouncements };
+module.exports = { addAnnouncement  , fetchAnnouncements };

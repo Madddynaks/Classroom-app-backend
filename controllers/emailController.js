@@ -1,21 +1,19 @@
 const { extractDataFromExcel, generateUniqueId, generatePassword } = require('../services/excelService');
+const bcrypt = require("bcryptjs");
 const { sendEmail } = require('../utils/emailSender');
 const StudentData = require('../models/Students');
 const TeacherData = require('../models/Teachers');
 const UserData = require('../models/Users');
-const NotesData = require('../models/Notes');
-const FeedbackData = require('../models/Feedback');
-const ClassroomData = require('../models/Classroom');
-const CRData = require('../models/CR');
-const AdminData = require('../models/Admin');
-const AnnouncementData = require('../models/Announcements');
 const SubjectData = require('../models/Subjects');
-const TeacherSubjectData = require('../models/Teacher-Subject');
 
 const registerStudent = async (req, res) => {
     try {
         const { filePath } = req.body;
         const data = extractDataFromExcel(filePath);
+
+        if(req.body.role !== 'Admin'){
+            return res.status(403).json({ message: "Only Admins are allowed to Register Students" });
+        }
 
         for (const row of data) {
             const { Name, Rollno, semester, branch, Email } = row;
@@ -28,6 +26,7 @@ const registerStudent = async (req, res) => {
             const role = "Student";
             const uniqueId = generateUniqueId();
             const password = generatePassword();
+            const hashedPassword = await bcrypt.hash(password, 10);
 
             const studentData = new StudentData({
                 id: uniqueId, 
@@ -40,7 +39,7 @@ const registerStudent = async (req, res) => {
             const userData = new UserData({
                 id: uniqueId, 
                 email: Email, 
-                password, 
+                password: hashedPassword, 
                 role,
             });
 
@@ -83,6 +82,10 @@ const addSubjectsExcel = async (req, res) => {
         const { filePath } = req.body;
         const data = extractDataFromExcel(filePath);
 
+        if(req.body.role !== 'Admin'){
+            return res.status(403).json({ message: "Only Admins are allowed to Add Subjects" });
+        }
+
         for (const row of data) {
             const { name, semester, branch } = row; 
 
@@ -122,16 +125,21 @@ const registerTeacher = async (req, res) => {
         const { filePath } = req.body;
         const data = extractDataFromExcel(filePath);
 
+        if(req.body.role !== 'Admin'){
+            return res.status(403).json({ message: "Only Admins are allowed to Register Teachers" });
+        }
+
         for (const row of data) {
             const { Name, Email } = row;
             const uniqueId = generateUniqueId();
             const password = generatePassword();
+            const hashedPassword = await bcrypt.hash(password, 10);
             const role = "Teacher"
 
             const userData = new UserData({
                 id: uniqueId, 
                 email: Email, 
-                password, 
+                password : hashedPassword, 
                 role,
             });
 
