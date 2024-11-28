@@ -11,6 +11,7 @@ const emailRoutes = require('./routes/emailRoutes'); // Make sure this is correc
 const manageStudentsRoutes = require('./routes/manageStudentsRoutes');
 const teacherSubjectRoutes = require('./routes/teacherSubjectRoutes');
 const notesRoutes = require('./routes/notesRoutes');
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use("/api/manageStudents", manageStudentsRoutes);
 app.use("/api", teacherSubjectRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/notes", notesRoutes);
+app.use("/api/auth", authRoutes);
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
