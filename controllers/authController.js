@@ -5,8 +5,7 @@ const Users = require("../models/Users");
 const SECRET_KEY = "secret"; 
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-  console.log("email : ", email, "password :" , password);
+  const { email, password } = req.body; 
 
   try {
     // Find the user by email
