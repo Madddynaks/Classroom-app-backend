@@ -6,6 +6,6 @@ const router = express.Router();
 // Route to add announcements
 router.post("/add", authenticateUser , addAnnouncement);
 // router.delete("/delete", deleteAnnouncement);
-router.post("/fetch", fetchAnnouncements);
+router.post("/fetch", authenticateUser, fetchAnnouncements);
 
 module.exports = router;

@@ -62,8 +62,8 @@ const addAnnouncement = async (req, res) => {
 
   const fetchAnnouncements = async (req, res) => {
     try {
-      const { userId } = req.body.user_id // The user's ID is passed in the request body
-
+      const  userId  = req.body.user_id // The user's ID is passed in the request body
+      // console.log(req.body.user_id)
       if (!userId) {
         return res.status(400).json({ message: "User ID is required" });
       }
