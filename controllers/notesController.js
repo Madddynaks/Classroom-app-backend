@@ -5,44 +5,48 @@ const CR = require("../models/CR");
 const Subjects = require("../models/Subjects");
 
 // Controller to add notes
+
 const addNoteTeacher = async (req, res) => {
 	const { user_id, subjectId, noteText, role } = req.body;
 	const teacherId = user_id;
+  
 	try {
-		if (role.toLowerCase() !== "teacher") {
-			return res.status(403).json({ message: "Only teachers can add notes" });
-		}
-
-		// Step 2: Check teacher-subject relationship
-		const relationship = await TeacherSubject.findOne({
-			TeacherId: teacherId,
-			SubjectId: subjectId,
+	  // Step 1: Check if the role is teacher
+	  if (role.toLowerCase() !== "teacher") {
+		return res.status(403).json({ message: "Only teachers can add notes" });
+	  }
+  
+	  // Step 2: Check teacher-subject relationship
+	  const relationship = await TeacherSubject.findOne({
+		TeacherId: teacherId,
+		SubjectId: subjectId,
+	  });
+  
+	  if (!relationship) {
+		return res.status(403).json({
+		  message: "Teacher is not assigned to this subject",
 		});
-
-		if (!relationship) {
-			return res.status(403).json({
-				message: "Teacher is not assigned to this subject",
-			});
-		}
-
-		// Step 3: Add the note
-		const newNote = new Notes({
-			userID: teacherId,
-			subjectID: subjectId,
-			note: noteText,
-		});
-
-		await newNote.save();
-
-		res.status(201).json({
-			message: "Note added successfully",
-			note: newNote,
-		});
+	  }
+  
+	  // Step 3: Add the note
+	  const newNote = new Notes({
+		userID: teacherId,
+		subjectID: subjectId,
+		note: noteText,
+	  });
+  
+	  await newNote.save();
+  
+	  res.status(201).json({
+		message: "Note added successfully",
+		note: newNote,
+	  });
 	} catch (error) {
-		console.error(error);
-		res.status(500).json({ message: "Server error", error: error.message });
+	  console.error(error);
+	  res.status(500).json({ message: "Server error", error: error.message });
 	}
-};
+  };
+  
 
 const addNoteByStudent = async (req, res) => {
 	const { user_id, role, subjectId, noteText } = req.body;
