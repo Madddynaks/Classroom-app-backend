@@ -29,7 +29,7 @@ app.use("/api/announcements", announcementRoutes);
 app.use("/api/manageStudents", manageStudentsRoutes);
 app.use("/api", teacherSubjectRoutes);
 app.use("/api/feedback", feedbackRoutes);
-app.use("/api/notes", notesRoutes);
+app.use("/api", notesRoutes);
 app.use("/api/auth", authRoutes);
 
 // Start Server
