@@ -8,4 +8,5 @@ router.post("/add", authenticateUser , addAnnouncement);
 router.delete("/delete",authenticateUser, deleteAnnouncement);
 router.post("/fetch",authenticateUser, fetchAnnouncements);
 
+
 module.exports = router;

@@ -67,7 +67,7 @@ const getUnassignedSubjects = async (req, res) => {
 };
 
 const getSubjectsByTeacher = async (req, res) => {
-	const { teacherId } = req.body;
+	const { teacherId } = req.body.user_id;
 
 	try {
 		// Validate input

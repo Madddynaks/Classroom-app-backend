@@ -115,3 +115,5 @@ const fetchAnnouncements = async (req, res) => {
 };
 
 module.exports = { addAnnouncement, fetchAnnouncements, deleteAnnouncement };
+
+ 
