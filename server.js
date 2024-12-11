@@ -12,6 +12,8 @@ const manageStudentsRoutes = require('./routes/manageStudentsRoutes');
 const teacherSubjectRoutes = require('./routes/teacherSubjectRoutes');
 const notesRoutes = require('./routes/notesRoutes');
 const authRoutes = require("./routes/authRoutes");
+const subjectRoutes = require("./routes/subjectRoutes");
+const Subjects = require('./models/Subjects');
 
 const app = express();
 
@@ -30,7 +32,9 @@ app.use("/api/manageStudents", manageStudentsRoutes);
 app.use("/api", teacherSubjectRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api", notesRoutes);
+app.use("/api", subjectRoutes);
 app.use("/api/auth", authRoutes);
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;
