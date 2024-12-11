@@ -5,8 +5,7 @@ const Teacher = require("../models/Teachers");
 // Function to assign subjects to a teacher
 const assignSubjectsToTeacher = async (req, res) => {
 	const { user_id, subjectIds } = req.body;
-	teacherId = user_id;
-
+	const teacherId = user_id;
 
 	try {
 		// Validate input
@@ -69,7 +68,8 @@ const getUnassignedSubjects = async (req, res) => {
 };
 
 const getSubjectsByTeacher = async (req, res) => {
-	const { user_id } = req.body.user_id;
+	const  user_id  = req.body.user_id;
+	console.log(user_id)
 	const teacherId = user_id
 	try {
 		// Validate input
