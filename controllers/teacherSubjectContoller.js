@@ -3,70 +3,124 @@ const Subject = require("../models/Subjects");
 const Teacher = require("../models/Teachers");
 
 // Function to assign subjects to a teacher
+// const assignSubjectsToTeacher = async (req, res) => {
+// 	const { user_id, subjectIds } = req.body;
+// 	const teacherId = user_id;
+
+// 	try {
+// 		// Validate input
+// 		if (!teacherId || !subjectIds || !Array.isArray(subjectIds)) {
+// 			return res
+// 				.status(400)
+// 				.json({ message: "Invalid input. Provide teacherId and subjectIds as an array." });
+// 		}
+
+// 		// Check if the teacher exists
+// 		const teacherExists = await Teacher.findOne({ id: teacherId });
+// 		if (!teacherExists) {
+// 			return res.status(404).json({ message: "Teacher not found." });
+// 		}
+
+// 		// Validate that all subjectIds exist
+// 		const validSubjects = await Subject.find({ SubjectId: { $in: subjectIds } });
+// 		if (validSubjects.length !== subjectIds.length) {
+// 			return res.status(400).json({ message: "One or more SubjectIds are invalid." });
+// 		}
+
+// 		// Prepare entries for the Teacher-Subject table
+// 		const teacherSubjectEntries = subjectIds.map((subjectId) => ({
+// 			SubjectId: subjectId,
+// 			TeacherId: teacherId,
+// 		}));
+
+// 		// Insert records (ignore duplicates if already assigned)
+// 		await TeacherSubject.insertMany(teacherSubjectEntries, { ordered: false });
+
+// 		res.status(201).json({ message: "Subjects assigned successfully to the teacher." });
+// 	} catch (error) {
+// 		if (error.code === 11000) {
+// 			return res
+// 				.status(400)
+// 				.json({ message: "Some subjects are already assigned to this teacher." });
+// 		}
+// 		console.error("Error assigning subjects:", error);
+// 		res.status(500).json({ message: "Internal server error." });
+// 	}
+// };
+
 const assignSubjectsToTeacher = async (req, res) => {
-	const { user_id, subjectIds } = req.body;
+	const { user_id, subjectId } = req.body;
 	const teacherId = user_id;
-
+  
 	try {
-		// Validate input
-		if (!teacherId || !subjectIds || !Array.isArray(subjectIds)) {
-			return res
-				.status(400)
-				.json({ message: "Invalid input. Provide teacherId and subjectIds as an array." });
-		}
-
-		// Check if the teacher exists
-		const teacherExists = await Teacher.findOne({ id: teacherId });
-		if (!teacherExists) {
-			return res.status(404).json({ message: "Teacher not found." });
-		}
-
-		// Validate that all subjectIds exist
-		const validSubjects = await Subject.find({ SubjectId: { $in: subjectIds } });
-		if (validSubjects.length !== subjectIds.length) {
-			return res.status(400).json({ message: "One or more SubjectIds are invalid." });
-		}
-
-		// Prepare entries for the Teacher-Subject table
-		const teacherSubjectEntries = subjectIds.map((subjectId) => ({
-			SubjectId: subjectId,
-			TeacherId: teacherId,
-		}));
-
-		// Insert records (ignore duplicates if already assigned)
-		await TeacherSubject.insertMany(teacherSubjectEntries, { ordered: false });
-
-		res.status(201).json({ message: "Subjects assigned successfully to the teacher." });
+	  // Validate input
+	  if (!teacherId || !subjectId) {
+		return res
+		  .status(400)
+		  .json({ message: "Invalid input. Provide both teacherId and subjectId." });
+	  }
+  
+	  // Check if the teacher exists
+	  const teacherExists = await Teacher.findOne({ id: teacherId });
+	  if (!teacherExists) {
+		return res.status(404).json({ message: "Teacher not found." });
+	  }
+  
+	  // Check if the subject exists
+	  const subjectExists = await Subject.findOne({ SubjectId: subjectId });
+	  if (!subjectExists) {
+		return res.status(400).json({ message: "Subject not found." });
+	  }
+  
+	  // Create or update the Teacher-Subject record
+	  const teacherSubjectEntry = new TeacherSubject({ SubjectId: subjectId, TeacherId: teacherId });
+	  await teacherSubjectEntry.save();
+  
+	  res.status(201).json({ message: "Subject assigned successfully to the teacher." });
 	} catch (error) {
-		if (error.code === 11000) {
-			return res
-				.status(400)
-				.json({ message: "Some subjects are already assigned to this teacher." });
-		}
-		console.error("Error assigning subjects:", error);
-		res.status(500).json({ message: "Internal server error." });
+	  console.error("Error assigning subjects:", error);
+	  res.status(500).json({ message: "Internal server error." });
 	}
-};
+  };
+  
+
+// const getUnassignedSubjects = async (req, res) => {
+// 	try {
+// 		// Get all SubjectIds that are already assigned to teachers
+// 		const assignedSubjects = await TeacherSubject.find({}, "SubjectId");
+// 		const assignedSubjectIds = assignedSubjects.map((entry) => entry.SubjectId);
+
+// 		// Fetch subjects that are not assigned
+// 		const unassignedSubjects = await Subject.find({ SubjectId: { $nin: assignedSubjectIds } });
+
+// 		res.status(200).json({
+// 			message: "Unassigned subjects retrieved successfully.",
+// 			unassignedSubjects,
+// 		});
+// 	} catch (error) {
+// 		console.error("Error fetching unassigned subjects:", error);
+// 		res.status(500).json({ message: "Internal server error." });
+// 	}
+// };
 
 const getUnassignedSubjects = async (req, res) => {
 	try {
-		// Get all SubjectIds that are already assigned to teachers
-		const assignedSubjects = await TeacherSubject.find({}, "SubjectId");
-		const assignedSubjectIds = assignedSubjects.map((entry) => entry.SubjectId);
-
-		// Fetch subjects that are not assigned
-		const unassignedSubjects = await Subject.find({ SubjectId: { $nin: assignedSubjectIds } });
-
-		res.status(200).json({
-			message: "Unassigned subjects retrieved successfully.",
-			unassignedSubjects,
-		});
+	  // Get all assigned SubjectIds
+	  const assignedSubjects = await TeacherSubject.find({}, "SubjectId");
+	  const assignedSubjectIds = assignedSubjects.map((entry) => entry.SubjectId);
+  
+	  // Fetch all subjects that are not assigned
+	  const unassignedSubjects = await Subject.find({ SubjectId: { $nin: assignedSubjectIds } });
+  
+	  res.status(200).json({
+		message: "Unassigned subjects retrieved successfully.",
+		unassignedSubjects,
+	  });
 	} catch (error) {
-		console.error("Error fetching unassigned subjects:", error);
-		res.status(500).json({ message: "Internal server error." });
+	  console.error("Error fetching unassigned subjects:", error);
+	  res.status(500).json({ message: "Internal server error." });
 	}
-};
-
+  };
 const getSubjectsByTeacher = async (req, res) => {
 	const  user_id  = req.body.user_id;
 	console.log(user_id)
